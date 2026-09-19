@@ -2,8 +2,472 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Otter Trade — Growth Console (live mirror)</title>
-<style>__TOKENS_CSS__</style>
-<style>__CONSOLE_CSS__</style>
+<style>/*
+Hermes desktop design tokens — extracted verbatim from
+przbadu/hermes-ui app/src/styles.css (upstream: hermes-agent apps/desktop, MIT).
+Flat-not-boxed, borderless + shadow-nous elevation, ui-* token hierarchy.
+*/
+
+/*
+--- fonts ---
+*/
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/JetBrainsMono-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/JetBrainsMono-Bold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/JetBrainsMono-Italic.woff2') format('woff2');
+}
+
+/*
+--- theme seeds (dark-first: the console lives in the terminal world) ---
+*/
+:root,
+:root.dark {
+  color-scheme: dark;
+  --theme-foreground: #17171a;
+  --theme-primary: #0053fd;
+  --theme-midground: #0053fd;
+  --theme-warm: #cf806d;
+  --ui-base: var(--theme-foreground);
+  --ui-accent: var(--theme-midground);
+  --ui-accent-secondary: var(--theme-primary);
+  --ui-warm: var(--theme-warm);
+  --ui-red: #e75e78;
+  --ui-green: #55a583;
+  --ui-yellow: #c08532;
+  --ui-cyan: #6f9ba6;
+  --ui-blue: #3d7bfd;
+  --ui-purple: #9e94d5;
+  --theme-neutral-chrome: #0d0d0e;
+  --theme-neutral-sidebar: #0a0a0b;
+  --theme-neutral-card: #161618;
+  --ui-bg-primary: color-mix(in srgb, var(--ui-accent) 16%, color-mix(in srgb, var(--ui-base) 10%, transparent));
+  --ui-bg-secondary: color-mix(in srgb, var(--ui-accent) 11%, color-mix(in srgb, var(--ui-base) 7%, transparent));
+  --ui-bg-tertiary: color-mix(in srgb, var(--ui-accent) 8%, color-mix(in srgb, var(--ui-base) 5%, transparent));
+  --ui-bg-quaternary: color-mix(in srgb, var(--ui-accent) 5%, color-mix(in srgb, var(--ui-base) 4%, transparent));
+  --ui-bg-quinary: color-mix(in srgb, var(--ui-accent) 3%, color-mix(in srgb, var(--ui-base) 3%, transparent));
+  --ui-stroke-primary: color-mix(in srgb, var(--ui-accent) 24%, transparent);
+  --ui-stroke-secondary: color-mix(in srgb, var(--ui-accent) 16%, transparent);
+  --ui-stroke-tertiary: color-mix(in srgb, var(--ui-accent) 10%, transparent);
+  --ui-stroke-quaternary: color-mix(in srgb, var(--ui-accent) 6%, transparent);
+  --ui-row-hover: color-mix(in srgb, var(--ui-accent) 4%, transparent);
+  --ui-row-active: color-mix(in srgb, var(--ui-accent) 8%, transparent);
+  --chrome-action-hover: color-mix(in srgb, var(--ui-accent) 6%, transparent);
+  --ui-text-primary: #f2f2f3;
+  --ui-text-secondary: color-mix(in srgb, #f2f2f3 74%, transparent);
+  --ui-text-tertiary: color-mix(in srgb, #f2f2f3 52%, transparent);
+  --ui-text-quaternary: color-mix(in srgb, #f2f2f3 34%, transparent);
+  --dt-background: color-mix(in srgb, #f8faff 0%, #0d0d0e);
+  --dt-sidebar: #0a0a0b;
+  --dt-card: color-mix(in srgb, var(--theme-neutral-card) 62%, var(--theme-neutral-chrome));
+  --dt-elevated: color-mix(in srgb, #161618 46%, #0d0d0e);
+  --dt-input: color-mix(in srgb, #161618 46%, #0d0d0e);
+  --dt-border: var(--ui-stroke-tertiary);
+  --dt-ring: color-mix(in srgb, var(--ui-accent) 60%, transparent);
+  --dt-selection: color-mix(in srgb, #ffd24a 38%, transparent);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --shadow-nous:
+    0 0.125rem 0.25rem -0.125rem color-mix(in srgb, #000 7%, transparent),
+    0 0.5rem 0.75rem -0.375rem color-mix(in srgb, #000 6%, transparent),
+    0 1.25rem 1.75rem -0.875rem color-mix(in srgb, #000 6%, transparent),
+    0 2.25rem 3rem -1.75rem color-mix(in srgb, #000 0%, transparent);
+  --stroke-nous: color-mix(in srgb, currentColor 3%, transparent);
+}
+
+* { box-sizing: border-box; border-color: var(--dt-border); }
+
+html, body {
+  height: 100dvh;
+  margin: 0;
+  overflow: hidden;   /* app shell, not a document — panes own their scroll */
+}
+
+body {
+  background: var(--dt-background);
+  color: var(--ui-text-primary);
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}</style>
+<style>/*
+Growth Console — Hermes desktop design system
+Component styles: flat-not-boxed, hairline dividers, borderless elevation,
+one primitive per concern. Built on hermes-tokens.css (see that file for
+provenance — przbadu/hermes-ui, MIT).
+*/
+
+/*
+--- shell: sidebar roster + main scroller (hermes master-detail) ---
+*/
+.shell { display: flex; height: 100dvh; }
+
+.sidebar {
+  width: 244px;
+  flex-shrink: 0;
+  background: var(--dt-sidebar);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sidebar-head {
+  padding: 14px 14px 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.sidebar-head .brand {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.sidebar-head .brand em {
+  font-style: normal;
+  color: var(--ui-accent);
+}
+.sidebar-head .sub {
+  font-size: 0.65rem;
+  color: var(--ui-text-quaternary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* nav sections: flat list, hover fills, active row — no boxes */
+.nav-scroll { flex: 1; overflow-y: auto; padding: 4px 8px; }
+.nav-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ui-text-quaternary);
+  padding: 12px 8px 4px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 7px 9px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ui-text-secondary);
+  font: inherit;
+  font-size: 0.8125rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+.nav-item:hover { background: var(--chrome-action-hover); color: var(--ui-text-primary); }
+.nav-item.active { background: var(--ui-row-active); color: var(--ui-text-primary); font-weight: 500; }
+.nav-item .glyph { width: 15px; text-align: center; opacity: 0.85; }
+.nav-item .count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--ui-text-quaternary);
+}
+.nav-item .pulse {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ui-green);
+  animation: nous-pulse 1.2s ease-in-out infinite;
+}
+@keyframes nous-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+/* status footer of sidebar */
+.sidebar-foot {
+  border-top: 1px solid var(--ui-stroke-quaternary);
+  padding: 10px 14px;
+  font-size: 0.6875rem;
+  color: var(--ui-text-quaternary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dot.ok { background: var(--ui-green); }
+.dot.warn { background: var(--ui-yellow); }
+.dot.flag { background: var(--ui-red); }
+.dot.off { background: var(--ui-text-quaternary); }
+
+/*
+--- main pane ---
+*/
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px 0;
+  flex-wrap: wrap;
+}
+.topbar h1 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.topbar .crumb {
+  font-size: 0.7rem;
+  color: var(--ui-text-quaternary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 9px;
+  border-radius: 99px;
+  background: var(--ui-bg-quaternary);
+  color: var(--ui-text-secondary);
+  font-size: 0.6875rem;
+}
+.pill.accent { background: var(--ui-bg-tertiary); color: var(--ui-accent); }
+.pill.ok { color: var(--ui-green); }
+.pill.warn { color: var(--ui-yellow); }
+.pill.flag { color: var(--ui-red); }
+
+.scroll { flex: 1; overflow-y: auto; padding: 10px 22px 60px; }
+
+/*
+--- KPI strip: flat row of number blocks (no cards) ---
+*/
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 0;
+  padding: 6px 0 18px;
+}
+.kpi {
+  padding: 10px 16px 10px 0;
+  border-right: 1px solid var(--ui-stroke-quaternary);
+  margin-right: 16px;
+}
+.kpi:last-child { border-right: 0; margin-right: 0; }
+.kpi .label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ui-text-tertiary);
+  white-space: nowrap;
+}
+.kpi .value {
+  font-family: var(--font-mono);
+  font-size: 21px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+.kpi .value.good { color: var(--ui-green); }
+.kpi .value.bad { color: var(--ui-red); }
+.kpi .target { font-size: 0.6875rem; color: var(--ui-text-quaternary); margin-top: 1px; white-space: nowrap; }
+.kpi .spark { display: flex; align-items: flex-end; gap: 2px; height: 22px; margin-top: 5px; }
+.kpi .spark i { flex: 1; background: var(--ui-accent-secondary); opacity: 0.55; min-height: 2px; border-radius: 1px; }
+
+/*
+--- sections: hairline-separated, never boxed ---
+*/
+.section { padding: 18px 0 4px; }
+.section + .section { border-top: 1px solid var(--ui-stroke-tertiary); margin-top: 14px; }
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 10px;
+}
+.section-head h2 {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ui-text-tertiary);
+  margin: 0;
+}
+.section-head .hint { font-size: 0.6875rem; color: var(--ui-text-quaternary); }
+
+/*
+--- tables: hairline rows, no grid boxes ---
+*/
+.tbl { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+.tbl th {
+  text-align: left;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ui-text-quaternary);
+  padding: 4px 10px 6px 0;
+  border-bottom: 1px solid var(--ui-stroke-secondary);
+}
+.tbl td {
+  padding: 7px 10px 7px 0;
+  border-bottom: 1px solid var(--ui-stroke-quaternary);
+  vertical-align: top;
+}
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl tr:hover td { background: var(--ui-row-hover); }
+.tbl td.num, .tbl th.num { text-align: right; font-family: var(--font-mono); padding-right: 12px; }
+.tbl .sub { font-size: 0.6875rem; color: var(--ui-text-tertiary); margin-top: 1px; max-width: 420px; }
+.tbl td.mono { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ui-text-secondary); }
+
+/* status chips: quiet fills, hermes colors */
+.chip {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-family: var(--font-mono);
+  background: var(--ui-bg-quaternary);
+  color: var(--ui-text-secondary);
+  white-space: nowrap;
+}
+.chip.on { background: color-mix(in srgb, var(--ui-green) 16%, transparent); color: var(--ui-green); }
+.chip.off { color: var(--ui-text-quaternary); }
+.chip.warn { background: color-mix(in srgb, var(--ui-yellow) 14%, transparent); color: var(--ui-yellow); }
+.chip.flag { background: color-mix(in srgb, var(--ui-red) 14%, transparent); color: var(--ui-red); }
+.chip.accent { background: var(--ui-bg-tertiary); color: var(--ui-accent); }
+
+.prio {
+  display: inline-block;
+  width: 17px; height: 17px; line-height: 17px;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: var(--ui-bg-quaternary);
+  color: var(--ui-text-quaternary);
+}
+.prio.p1 { background: color-mix(in srgb, var(--ui-accent) 22%, transparent); color: var(--ui-text-primary); }
+.prio.p2 { background: var(--ui-bg-tertiary); color: var(--ui-text-secondary); }
+
+/* KOL personas: roster rows like the bots pane (avatar shape + meta) */
+.persona-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 4px;
+  border-bottom: 1px solid var(--ui-stroke-quaternary);
+}
+.persona-row:last-child { border-bottom: 0; }
+.persona-row:hover { background: var(--ui-row-hover); }
+.face {
+  width: 34px; height: 34px; flex-shrink: 0;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.persona-row .name { font-size: 0.8125rem; font-weight: 500; }
+.persona-row .meta {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--ui-text-quaternary);
+}
+.persona-row .right { margin-left: auto; text-align: right; }
+.stage-track { display: flex; gap: 3px; align-items: center; }
+.stage-track i {
+  width: 16px; height: 3px; border-radius: 2px;
+  background: var(--ui-stroke-secondary);
+}
+.stage-track i.done { background: var(--ui-green); }
+.stage-track i.cur { background: var(--ui-accent); animation: nous-pulse 1.2s ease-in-out infinite; }
+
+/* activity feed: chat-like rows */
+.feed-row {
+  display: flex;
+  gap: 12px;
+  padding: 7px 2px;
+  border-bottom: 1px solid var(--ui-stroke-quaternary);
+  font-size: 0.8125rem;
+  align-items: baseline;
+}
+.feed-row:last-child { border-bottom: 0; }
+.feed-row .t {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--ui-text-quaternary);
+  flex-shrink: 0;
+  min-width: 44px;
+}
+.feed-row .src { flex-shrink: 0; min-width: 96px; }
+.feed-row .txt { color: var(--ui-text-secondary); min-width: 0; }
+.feed-row .txt b { color: var(--ui-text-primary); font-weight: 500; }
+
+/* KPI form: borderless inputs, underline-on-focus (hermes SearchField style) */
+.kpi-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 14px 18px;
+  padding: 4px 0 8px;
+}
+.field label {
+  display: block;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ui-text-tertiary);
+  margin-bottom: 3px;
+}
+.field input {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--ui-stroke-tertiary);
+  border-radius: 0;
+  background: transparent;
+  padding: 4px 0;
+  color: var(--ui-text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+.field input:focus { outline: none; border-bottom-color: var(--ui-accent); }
+.btn {
+  border: 0;
+  border-radius: 4px;
+  background: var(--ui-bg-primary);
+  color: var(--ui-text-primary);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 7px 16px;
+  cursor: pointer;
+  align-self: end;
+}
+.btn:hover { background: color-mix(in srgb, var(--ui-accent) 24%, transparent); }
+.msg { font-size: 0.6875rem; margin-top: 6px; min-height: 15px; color: var(--ui-text-tertiary); }
+.msg.ok { color: var(--ui-green); }
+.msg.err { color: var(--ui-red); }
+
+/* overlays (if any) float on shadow-nous — never hard borders */
+.empty {
+  padding: 26px 0;
+  color: var(--ui-text-quaternary);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+.empty .glyph { font-size: 1.5rem; display: block; margin-bottom: 6px; opacity: 0.5; }
+
+/* scrollbars: thin, chrome-matched */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--ui-stroke-secondary); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ui-stroke-primary); }
+::-webkit-scrollbar-track { background: transparent; }</style>
 </head><body>
 <div class="shell">
 
