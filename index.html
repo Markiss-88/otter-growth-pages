@@ -1,12 +1,341 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
-<title>Otter Trade — Growth Console</title>
-<meta http-equiv="refresh" content="0; url=https://desktop-5j14pop.taild41276.ts.net:8444">
-<link rel="canonical" href="https://desktop-5j14pop.taild41276.ts.net:8444">
-<style>body{font-family:-apple-system,sans-serif;background:#0a0e14;color:#e8edf4;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;flex-direction:column;gap:12px}
-a{color:#2dd4a7;font-size:18px}</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Otter Trade — Growth Console (live mirror)</title>
+<style>__TOKENS_CSS__</style>
+<style>__CONSOLE_CSS__</style>
 </head><body>
-<div>Redirecting to the Otter Trade Growth Console…</div>
-<a href="https://desktop-5j14pop.taild41276.ts.net:8444">Click here if you are not redirected</a>
-<script>location.replace("https://desktop-5j14pop.taild41276.ts.net:8444")</script>
-</body></html>
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <span class="brand">Otter <em>Trade</em></span>
+      <span class="sub">growth</span>
+    </div>
+    <nav class="nav-scroll" id="nav">
+      <div class="nav-label">Mission</div>
+      <button class="nav-item active" data-target="sec-kpis"><span class="glyph">◎</span>Overview<span class="count" id="nav-wac"></span></button>
+      <div class="nav-label">Workstreams</div>
+      <button class="nav-item" data-target="sec-agent"><span class="glyph">✎</span>Social Agent<span class="count" id="nav-agent"></span></button>
+      <button class="nav-item" data-target="sec-loops"><span class="glyph">⟳</span>Outreach Automation<span class="pulse" id="nav-pulse" hidden></span><span class="count" id="nav-loops"></span></button>
+      <button class="nav-item" data-target="sec-tg"><span class="glyph">✈</span>Telegram Outreach<span class="count" id="nav-tg"></span></button>
+      <button class="nav-item" data-target="sec-forums"><span class="glyph">▤</span>Forums<span class="count" id="nav-forums"></span></button>
+      <button class="nav-item" data-target="sec-kol"><span class="glyph">☺</span>KOL Personas<span class="count" id="nav-kol"></span></button>
+      <button class="nav-item" data-target="sec-platforms"><span class="glyph">◈</span>Platforms<span class="count" id="nav-plat"></span></button>
+      <div class="nav-label">Record</div>
+      <button class="nav-item" data-target="sec-kpi-entry"><span class="glyph">✚</span>Log KPIs</button>
+      <button class="nav-item" data-target="sec-feed"><span class="glyph">≡</span>Activity</button>
+      <button class="nav-item" data-target="sec-pipeline"><span class="glyph">▶</span>Forum Log</button>
+      <div class="nav-label">Later</div>
+      <button class="nav-item" data-target="sec-later"><span class="glyph">◇</span>Quests &amp; Arenas<span class="count">2</span></button>
+    </nav>
+    <div class="sidebar-foot">
+      <span class="dot off" id="foot-dot"></span>
+      <span id="foot-text">connecting…</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <h1 id="page-title">Overview</h1>
+      <span class="crumb" id="crumb">mission control</span>
+      <span class="pill" id="fleet-pill">fleet…</span>
+      <span class="pill" id="poster-pill">—</span>
+      <span style="margin-left:auto;font-size:.6875rem;color:var(--ui-text-quaternary)" id="updated">—</span>
+    </div>
+
+    <div class="scroll" id="scroll">
+
+      <section class="section" id="sec-kpis">
+        <div class="kpi-row" id="kpis"></div>
+      </section>
+
+      <section class="section" id="sec-loops">
+        <div class="section-head"><h2>Outreach Automation</h2><span class="hint">scheduled tasks on daniel</span></div>
+        <div id="loops-body"></div>
+      </section>
+
+      <section class="section" id="sec-tg">
+        <div class="section-head"><h2>Telegram Outreach</h2><span class="hint">live from daniel</span></div>
+        <div id="tg-body"></div>
+      </section>
+
+      <section class="section" id="sec-agent">
+        <div class="section-head"><h2>Social Agent</h2><span class="hint">draft → approve → send</span></div>
+        <div id="agent-body"></div>
+      </section>
+
+      <section class="section" id="sec-kol">
+        <div class="section-head"><h2>KOL Personas</h2><span class="hint">90-day grooming · Method 5</span></div>
+        <div id="kol-body"></div>
+      </section>
+
+      <section class="section" id="sec-forums">
+        <div class="section-head"><h2>Forum Outreach</h2><span class="hint" id="forums-hint"></span></div>
+        <div id="forums-body"></div>
+      </section>
+
+      <section class="section" id="sec-platforms">
+        <div class="section-head"><h2>Social Platforms</h2><span class="hint">adapters activate with creds</span></div>
+        <div id="platforms-body"></div>
+      </section>
+
+      <section class="section" id="sec-kpi-entry" style="display:none">
+        <div class="section-head"><h2>Log Today's KPIs</h2><span class="hint">manual sync until product DB is wired</span></div>
+        <form class="kpi-form" id="kpi-form">
+          <div class="field"><label>date</label><input name="date" type="date" required id="kpi-date"></div>
+          <div class="field"><label>spend $</label><input name="spend" type="number" step="0.01" min="0" placeholder="0"></div>
+          <div class="field"><label>signups</label><input name="signups" type="number" min="0" placeholder="0"></div>
+          <div class="field"><label>first matches</label><input name="first_matches" type="number" min="0" placeholder="0"></div>
+          <div class="field"><label>WAC</label><input name="wac" type="number" min="0" placeholder="0"></div>
+          <div class="field"><label>referral signups</label><input name="referral_signups" type="number" min="0" placeholder="0"></div>
+          <button class="btn" type="submit">Save day</button>
+        </form>
+        <div class="msg" id="kpi-msg"></div>
+      </section>
+
+      <section class="section" id="sec-pipeline">
+        <div class="section-head"><h2>Forum Pipeline Log</h2><span class="hint">outcomes · pending posts · referrals</span></div>
+        <div id="pipeline-body"></div>
+      </section>
+
+      <section class="section" id="sec-feed">
+        <div class="section-head"><h2>Activity</h2><span class="hint">drafts · posts · KPI entries</span></div>
+        <div id="feed-body"></div>
+      </section>
+
+      <section class="section" id="sec-later">
+        <div class="section-head"><h2>Later Phases</h2><span class="hint">Methods 1 &amp; 7</span></div>
+        <div id="later-body"></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+let STATE=null;
+const $=(id)=>document.getElementById(id);
+
+function esc(s){return String(s??"" ).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function fmtTime(ts){if(!ts)return"—";const d=new Date(ts*1000);return d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}
+function spark(values){if(!values||values.length<2)return"";const mx=Math.max(...values,1);
+return '<div class="spark">'+values.slice(-14).map(v=>`<i style="height:${Math.max(2,Math.round(v/mx*22))}px"></i>`).join("")+'</div>'}
+
+function navCount(id,txt){$(id).textContent=txt}
+
+function renderKPIs(s){
+  const k=s.kpi,w=k.week,t=k.targets;
+  const cacGood=w.cac!==null&&w.cac<=t.cac, actGood=w.activation!==null&&w.activation>=t.activation;
+  const hist=s.kpi_history.map(r=>r.signups||0);
+  $("kpis").innerHTML=`
+  <div class="kpi"><div class="label">WAC</div><div class="value">${esc(w.wac)}</div><div class="target">north star</div></div>
+  <div class="kpi"><div class="label">signups · 7d</div><div class="value">${esc(w.signups)}</div><div class="target">all-time ${esc(k.all_time.signups)}</div>${spark(hist)}</div>
+  <div class="kpi"><div class="label">activation · 7d</div><div class="value ${actGood?"good":"bad"}">${w.activation===null?"—":(w.activation*100).toFixed(1)+"%"}</div><div class="target">≥ 1%</div></div>
+  <div class="kpi"><div class="label">CAC · 7d</div><div class="value ${cacGood?"good":"bad"}">${w.cac===null?"—":"$"+w.cac}</div><div class="target">&lt; $2</div></div>
+  <div class="kpi"><div class="label">referrals · 7d</div><div class="value">${esc(w.referral_signups)}</div><div class="target">K → 1.0</div></div>
+  <div class="kpi"><div class="label">spend · 7d</div><div class="value">$${esc(w.spend)}</div><div class="target">$500/mo budget</div></div>`;
+  navCount("nav-wac", w.wac||"");
+}
+
+function renderLoops(s){
+  const L=s.loops;
+  if(!L.reachable){
+    $("loops-body").innerHTML='<div class="empty"><span class="glyph">⌀</span>fleet unreachable — is daniel online?</div>';
+    $("foot-dot").className="dot off";$("foot-text").textContent="fleet unreachable";
+    $("fleet-pill").className="pill flag";$("fleet-pill").textContent="fleet unreachable";
+    navCount("nav-loops","?");return;
+  }
+  const rows=L.loops.map(l=>{
+    const st=(l.status||"?").toLowerCase();
+    const chip=st==="disabled"?'<span class="chip off">disabled</span>'
+      :st==="running"?'<span class="chip on">running</span>'
+      :`<span class="chip on">${esc(l.status)}</span>`;
+    const res=String(l.last_result)==="1"?'<span class="chip flag">result 1</span>':esc(l.last_result);
+    const stale=l.stale?' <span class="chip warn">stale</span>':'';
+    return `<tr><td><b>${esc(l.name)}</b><div class="sub">${esc(l.job)}</div></td>
+    <td>${chip}${stale}</td><td class="mono">${esc(l.cadence)}</td>
+    <td class="mono">${esc(l.last_run||"—")}</td><td class="num">${res}</td></tr>`;
+  }).join("");
+  $("loops-body").innerHTML=`<table class="tbl">
+  <tr><th>loop</th><th>status</th><th class="num">cadence</th><th class="num">last run</th><th class="num">result</th></tr>${rows}</table>`;
+  const v=L.verdict;
+  if(v.includes("DISABLED")){$("fleet-pill").className="pill warn";$("fleet-pill").textContent="all loops disabled"}
+  else if(v.includes("flagged")){$("fleet-pill").className="pill warn";$("fleet-pill").textContent="verify flagged"}
+  else{$("fleet-pill").className="pill ok";$("fleet-pill").textContent="loops healthy"}
+  const enabled=L.enabled_count||0;
+  navCount("nav-loops", enabled+"/"+L.loops.length);
+  $("nav-pulse").hidden = !enabled;
+  $("foot-dot").className = v.includes("DISABLED")?"dot warn":"dot ok";
+  $("foot-text").textContent = v;
+}
+
+function renderTG(s){
+  const tg=s.tg_outreach;
+  if(!tg.reachable){
+    $("tg-body").innerHTML='<div class="empty"><span class="glyph">⌀</span>fleet unreachable</div>';
+    navCount("nav-tg","?");return;
+  }
+  const j=tg.joins,se=tg.sends;
+  $("tg-body").innerHTML=`<table class="tbl">
+  <tr><td>groups joined</td><td class="num">${esc(j.joined)} / ${esc(j.total)}</td></tr>
+  <tr><td>join queue remaining</td><td class="num">${esc(j.remaining)}</td></tr>
+  <tr><td>messages sent</td><td class="num">${esc(se.sent_total)}</td></tr>
+  <tr><td>sent today</td><td class="num">${esc(se.sent_today)}</td></tr>
+  <tr><td>skipped (unsendable)</td><td class="num">${esc(se.skipped)}</td></tr>
+  <tr><td>spam flag</td><td class="num">${se.spam_flagged?'<span class="chip flag">breaker open</span>':'<span class="chip on">clear</span>'}</td></tr></table>`;
+  navCount("nav-tg", j.joined);
+}
+
+function renderAgent(s){
+  const a=s.agent,c=a.counts_by_status;
+  const counts=Object.fromEntries(c.map ? c : []);
+  $("agent-body").innerHTML=`<table class="tbl">
+  <tr><td>posts by status</td><td class="num">posted ${counts.posted||0} · approved ${counts.approved||0} · draft ${counts.draft||0}</td></tr>
+  <tr><td>queue</td><td class="num">${a.social_queue_count} social · ${a.forum_queue_count} forum</td></tr>
+  <tr><td>platform metrics tracked</td><td class="num">${a.recent_metrics.length}</td></tr></table>`;
+  navCount("nav-agent", (counts.draft||0)+"d");
+}
+
+function renderKOL(s){
+  const stages=["warmup","replygame","weavein","authority"];
+  const stageLabel={warmup:"warm-up",replygame:"reply game",weavein:"weave-in",authority:"authority"};
+  const faces={degen:"🦈",educator:"🎓",local:"🌍",reporter:"📣"};
+  const rows=s.kol.map(p=>{
+    const idx=stages.indexOf(p.stage||"warmup");
+    const track=stages.map((st,i)=>`<i class="${i<idx?"done":i===idx?"cur":""}"></i>`).join("");
+    return `<div class="persona-row">
+      <div class="face">${faces[p.persona]||"◦"}</div>
+      <div><div class="name">${esc(p.persona)} <span class="meta">${esc(p.handle||"@—")}</span></div></div>
+      <div class="stage-track" title="${esc(stageLabel[stages[Math.max(0,idx)]])}">${track}</div>
+      <div class="right"><div class="name">${esc(p.followers)}</div><div class="meta">followers</div></div>
+    </div>`;
+  }).join("");
+  $("kol-body").innerHTML=rows||'<div class="empty">no personas</div>';
+  navCount("nav-kol", s.kol.length);
+}
+
+function renderForums(s){
+  const a=s.agent;
+  $("forums-hint").textContent=a.forum_targets+" targets · "+a.forum_targets_p1+" priority-1";
+  const rows=s.forum_registry.map(f=>{
+    const prio=f.priority===1?'<span class="prio p1">1</span>':f.priority===2?'<span class="prio p2">2</span>':'<span class="prio">3</span>';
+    return `<tr><td>${prio}</td>
+    <td><b>${esc(f.name)}</b><div class="sub">${esc(f.audience)}</div></td>
+    <td class="mono">${esc(f.category)}</td>
+    <td class="mono">${esc(f.region)}</td>
+    <td>${f.automation==="read-api"?'<span class="chip on">read-api</span>':'<span class="chip off">manual</span>'}</td>
+    <td class="mono" style="max-width:220px">${esc(f.link_policy)}…</td></tr>`;
+  }).join("");
+  $("forums-body").innerHTML=`<table class="tbl">
+  <tr><th>p</th><th>forum</th><th>category</th><th>region</th><th>automation</th><th>link policy</th></tr>${rows}</table>`;
+  navCount("nav-forums", a.forum_targets);
+}
+
+function renderPlatforms(s){
+  const rows=s.platforms.map(p=>`<tr>
+  <td><b>${esc(p.platform)}</b></td>
+  <td>${p.configured?'<span class="chip on">configured</span>':'<span class="chip off">not configured</span>'}</td>
+  <td class="mono">${esc(p.needs.join(", ")||"—")}</td></tr>`).join("");
+  $("platforms-body").innerHTML=`<table class="tbl"><tr><th>platform</th><th>status</th><th>requires</th></tr>${rows}</table>`;
+  navCount("nav-plat", s.platforms.filter(p=>p.configured).length+"/"+s.platforms.length);
+}
+
+function renderLater(s){
+  $("later-body").innerHTML=s.later.map(l=>`<table class="tbl">
+  <tr><td><b>${esc(l.workstream)}</b><div class="sub">${esc(l.next)}</div></td>
+  <td class="num"><span class="chip">${esc(l.status)}</span></td></tr></table>`).join("");
+}
+
+function renderPipeline(s){
+  const out=s.forum_outcomes||[];
+  const pend=s.forum_pending||[];
+  const rows=[];
+  out.forEach(o=>rows.push({
+    t:o.posted_at||"", tag:o.forum,
+    text:(o.url||"").slice(0,48) + " " + (o.replies||0) + " replies · " + (o.upvotes||0) + " upvotes",
+    ref:o.otter_link||"",
+    status:o.outcome||"—",
+  }));
+  pend.forEach(p=>{
+    const tag = p.post_id ? ("?ref=ot-" + (p.forum||"x").toLowerCase().replace(/\s+/g,"-") + "-" + p.post_id) : "";
+    rows.push({
+      t:new Date((p.filled_at||0)*1000).toISOString().slice(0,10),
+      tag:p.forum||"?",
+      text: esc(p.text||"").slice(0,80) + "…",
+      ref: tag,
+      status:"pending",
+    });
+  });
+  rows.sort((a,b)=>b.t.localeCompare(a.t));
+  const html=rows.map(r=>{
+    const linkChip = r.ref ? '<span class="chip accent" style="flex-shrink:0">otter.trade</span>' : '';
+    return `<div class="feed-row">
+      <span class="t">${esc(r.t)}</span><span class="src"><span class="chip">${esc(r.tag)}</span></span>
+      <span class="txt"${r.ref?` title="${esc(r.ref)}"`:""}>${esc(r.text)}</span><span class="t">${esc(r.status)}</span>${linkChip}
+    </div>`;
+  }).join("");
+  $("pipeline-body").innerHTML=html||'<div class="empty">no forum activity yet</div>';
+}
+function renderFeed(s){
+  const items=[];
+  (s.forum_queue||[]).forEach(p=>items.push({t:p.created_at,tag:p.platform.replace("forum_","f:"),text:(p.text||"").slice(0,90),status:p.status}));
+  (s.social_queue||[]).forEach(p=>items.push({t:p.created_at,tag:p.platform,text:(p.text||"").slice(0,90),status:p.status}));
+  (s.kpi_history||[]).slice(-5).reverse().forEach(k=>items.push({t:k.updated_at,tag:"kpi",text:`${k.date}: ${k.signups||0} signups · ${k.first_matches||0} first-matches · $${k.spend||0}`,status:"logged"}));
+  (s.forum_outcomes||[]).forEach(o=>items.push({t:o.posted_at||"",tag:o.forum,text:(o.outcome||"")+" "+((o.url||"").slice(0,40)),status:o.outcome||"—"}));
+  items.sort((a,b)=>b.t-a.t);
+  $("feed-body").innerHTML=items.slice(0,14).map(i=>`<div class="feed-row">
+  <span class="t">${fmtTime(i.t)}</span><span class="src"><span class="chip">${esc(i.tag)}</span></span>
+  <span class="txt">${esc(i.text)}</span><span class="t">${esc(i.status)}</span></div>`).join("")
+  ||'<div class="empty">no activity yet</div>';
+}
+
+async function refresh(){
+  try{
+    const r=await fetch("state.json?t="+Date.now()); STATE=await r.json();
+    if(STATE.error){$("foot-text").textContent="state error: "+STATE.error;return}
+    renderKPIs(STATE); renderLoops(STATE); renderTG(STATE); renderAgent(STATE);
+    renderKOL(STATE); renderForums(STATE); renderPlatforms(STATE); renderLater(STATE); renderPipeline(STATE); renderFeed(STATE);
+    $("updated").textContent="updated "+new Date(STATE.generated_at*1000).toLocaleTimeString();
+  }catch(e){$("foot-text").textContent="refresh failed";}
+}
+
+/* nav: section jumping + active state */
+document.querySelectorAll(".nav-item").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const target=$(btn.dataset.target);
+    if(target)target.scrollIntoView({behavior:"smooth",block:"start"});
+    $("page-title").textContent=btn.textContent.trim().replace(/[0-9?d/]+$/,"").trim();
+  });
+});
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id="nav-item";
+      document.querySelectorAll(".nav-item").forEach(b=>{
+        b.classList.toggle("active", b.dataset.target==="#"+e.target.id);
+      });
+    }
+  });
+},{root:$("scroll"),threshold:0.4});
+document.querySelectorAll(".section").forEach(s=>obs.observe(s));
+
+/* KPI form */
+$("kpi-date").value=new Date().toISOString().slice(0,10);
+$("kpi-form").addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  const f=new FormData(e.target),body={};
+  for(const [k,v] of f.entries())body[k]=v;
+  const msg=$("kpi-msg");
+  try{
+    const r=await fetch("/api/kpi",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const res=await r.json();
+    if(res.ok){msg.className="msg ok";msg.textContent="saved "+body.date;e.target.reset();$("kpi-date").value=body.date;refresh();}
+    else{msg.className="msg err";msg.textContent=res.error||"save failed";}
+  }catch(err){msg.className="msg err";msg.textContent="save failed";}
+});
+
+refresh(); setInterval(refresh,15000);
+</script></body></html>
