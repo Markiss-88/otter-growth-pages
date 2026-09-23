@@ -486,6 +486,7 @@ provenance — przbadu/hermes-ui, MIT).
       <button class="nav-item" data-target="sec-forums"><span class="glyph">▤</span>Forums<span class="count" id="nav-forums"></span></button>
       <button class="nav-item" data-target="sec-kol"><span class="glyph">☺</span>KOL Personas<span class="count" id="nav-kol"></span></button>
       <button class="nav-item" data-target="sec-platforms"><span class="glyph">◈</span>Platforms<span class="count" id="nav-plat"></span></button>
+      <button class="nav-item" data-target="sec-utm"><span class="glyph">◉</span>UTM Channels<span class="count" id="nav-utm"></span></button>
       <div class="nav-label">Record</div>
       <button class="nav-item" data-target="sec-kpi-entry"><span class="glyph">✚</span>Log KPIs</button>
       <button class="nav-item" data-target="sec-feed"><span class="glyph">≡</span>Activity</button>
@@ -542,6 +543,11 @@ provenance — przbadu/hermes-ui, MIT).
       <section class="section" id="sec-platforms">
         <div class="section-head"><h2>Social Platforms</h2><span class="hint">adapters activate with creds</span></div>
         <div id="platforms-body"></div>
+      </section>
+
+      <section class="section" id="sec-utm">
+        <div class="section-head"><h2>UTM Channel Metrics</h2><span class="hint">per-forum invite codes · posts · engagement</span></div>
+        <div id="utm-body"></div>
       </section>
 
       <section class="section" id="sec-kpi-entry" style="display:none">
@@ -711,6 +717,20 @@ function renderLater(s){
   <td class="num"><span class="chip">${esc(l.status)}</span></td></tr></table>`).join("");
 }
 
+function renderUTM(s){
+  const rows=(s.utm_channels||[]).map(c=>`<tr>
+    <td><b>${esc(c.forum)}</b><div class="sub">utm_source: ${esc(c.utm_source)}</div></td>
+    <td class="mono">${esc(c.invite_code||"—")}</td>
+    <td class="num">${esc(c.posts)}<div class="sub">${esc(c.staged)} staged</div></td>
+    <td class="num">${esc(c.replies)}</td>
+    <td class="num">${esc(c.upvotes)}</td>
+    <td class="mono" style="max-width:200px">${esc((c.link||"").replace("https://otter.trade/signup?inviteCode=","otter.trade/?ic="))}</td>
+  </tr>`).join("");
+  $("utm-body").innerHTML=`<table class="tbl">
+  <tr><th>channel</th><th>invite code</th><th class="num">posts</th><th class="num">replies</th><th class="num">upvotes</th><th>link</th></tr>${rows}</table>
+  <div class="mini">utm_source = forum_<code>slug</code> · invite codes are otter.trade's per-channel tracking · replies/upvotes = engagement on our posts</div>`;
+  navCount("nav-utm", (s.utm_channels||[]).length);
+}
 function renderPipeline(s){
   const out=s.forum_outcomes||[];
   const pend=s.forum_pending||[];
@@ -718,7 +738,7 @@ function renderPipeline(s){
   out.forEach(o=>rows.push({
     t:o.posted_at||"", tag:o.forum,
     text:(o.url||"").slice(0,48) + " " + (o.replies||0) + " replies · " + (o.upvotes||0) + " upvotes",
-    ref:o.otter_link||"",
+    ref:o.invite_code||"",
     status:o.outcome||"—",
   }));
   pend.forEach(p=>{
@@ -733,7 +753,7 @@ function renderPipeline(s){
   });
   rows.sort((a,b)=>b.t.localeCompare(a.t));
   const html=rows.map(r=>{
-    const linkChip = r.ref ? '<span class="chip accent" style="flex-shrink:0">otter.trade</span>' : '';
+    const linkChip = r.ref ? '<span class="chip accent" style="flex-shrink:0" title="invite code">' + esc(r.ref) + '</span>' : '';
     return `<div class="feed-row">
       <span class="t">${esc(r.t)}</span><span class="src"><span class="chip">${esc(r.tag)}</span></span>
       <span class="txt"${r.ref?` title="${esc(r.ref)}"`:""}>${esc(r.text)}</span><span class="t">${esc(r.status)}</span>${linkChip}
@@ -759,7 +779,7 @@ async function refresh(){
     const r=await fetch("state.json?t="+Date.now()); STATE=await r.json();
     if(STATE.error){$("foot-text").textContent="state error: "+STATE.error;return}
     renderKPIs(STATE); renderLoops(STATE); renderTG(STATE); renderAgent(STATE);
-    renderKOL(STATE); renderForums(STATE); renderPlatforms(STATE); renderLater(STATE); renderPipeline(STATE); renderFeed(STATE);
+    renderKOL(STATE); renderForums(STATE); renderPlatforms(STATE); renderUTM(STATE); renderLater(STATE); renderPipeline(STATE); renderFeed(STATE);
     $("updated").textContent="updated "+new Date(STATE.generated_at*1000).toLocaleTimeString();
   }catch(e){$("foot-text").textContent="refresh failed";}
 }
